@@ -20,6 +20,22 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "src/frontend/views", "chat.html"));
 });
 
+app.post("/api/chat", async (req, res) => {
+  try {
+    const llmApiUrl = process.env.LLM_API_BASE_URL || "http://localhost:8000/api"
+    const response = await fetch(`${llmApiUrl}/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req.body),
+    })
+    const data = await response.json()
+    res.json(data)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+
 const PORT = process.env.PORT || 8787;
 app.listen(PORT, (err) => {
   if (err) {
