@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unisyn AI</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              bg: { DEFAULT: '#0d0f12', soft: '#13161b' },
+              ring: '#1f2430',
+            },
+            boxShadow: {
+              subtle: '0 1px 2px rgba(0,0,0,.25), 0 8px 32px rgba(0,0,0,.35)',
+            },
+            borderRadius: { pill: '9999px' },
+          },
+        },
+      };
+    </script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Brand favicon (static SVG) -->
+    <link
+      rel="icon"
+      href='data:image/svg+xml;utf8,
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="%23c4b5fd"/><stop offset="1" stop-color="%237c3aed"/>
+          </linearGradient>
+        </defs>
+        <rect width="64" height="64" rx="12" fill="%230d0f12"/>
+        <path d="M16 20v14c0 7.7 6.3 14 14 14s14-6.3 14-14V20" fill="none" stroke="url(%23g)" stroke-width="6" stroke-linecap="round"/>
+        <ellipse cx="32" cy="34" rx="18" ry="6" fill="none" stroke="%235a31d3" stroke-opacity=".45" stroke-width="3" transform="rotate(-16 32 34)"/>
+        <circle cx="46" cy="30" r="3.6" fill="%23c4b5fd"/>
+      </svg>'
+    />
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        background: #0d0f12;
+      }
+      .glass {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.035),
+          rgba(255, 255, 255, 0.02)
+        );
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35),
+          inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      }
+      .ring-soft {
+        box-shadow: 0 0 0 1px #1f2430 inset;
+      }
+      .placeholder-gray::placeholder {
+        color: #8b92a7;
+      }
+      .fade-in {
+        animation: fade 0.2s ease-out;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .mono {
+        font-variant-ligatures: none;
+      }
+
+      /* Lighter response surfaces */
+      .card-surface {
+        background: rgba(255, 255, 255, 0.055);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .card-surface:hover {
+        border-color: rgba(255, 255, 255, 0.16);
+      }
+      .response-bubble {
+        background: rgba(255, 255, 255, 0.075);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 14px;
+      }
+      .response-bubble:hover {
+        border-color: rgba(255, 255, 255, 0.22);
+      }
+      .response-body {
+        color: #e5e7eb;
+      }
+      .response-meta {
+        color: #b6bdc8;
+      }
+      .chip-toggle input {
+        accent-color: #e5e7eb;
+      }
+
+      /* Unisyn brand accent */
+      .u-accent {
+        background: radial-gradient(
+            140% 140% at 50% -10%,
+            rgba(139, 92, 246, 0.28) 0%,
+            rgba(139, 92, 246, 0) 55%
+          ),
+          radial-gradient(
+            120% 120% at 80% 0%,
+            rgba(196, 181, 253, 0.24) 0%,
+            rgba(196, 181, 253, 0) 48%
+          ),
+          #0d0f12;
+      }
+      .u-glow {
+        filter: drop-shadow(0 8px 32px rgba(124, 58, 237, 0.35));
+      }
+      .u-stroke {
+        stroke: url(#uGrad);
+      }
+      .u-orbit {
+        transform-origin: 50% 50%;
+        animation: u-spin 9s linear infinite;
+      }
+      .u-orbit.fast {
+        animation-duration: 6.5s;
+      }
+      .u-orbit.slow {
+        animation-duration: 12s;
+        animation-direction: reverse;
+      }
+      @keyframes u-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .u-orbit,
+        .u-orbit.fast,
+        .u-orbit.slow {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="h-full text-zinc-200 u-accent">
+    <!-- Top Nav -->
+    <header class="sticky top-0 z-30 backdrop-blur bg-transparent">
+      <div
+        class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-3">
+          <!-- Unisyn animated logo (compact) -->
+          <div
+            class="grid place-items-center w-9 h-9 rounded-full bg-zinc-900 ring-soft u-glow"
+          >
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-label="Unisyn AI"
+            >
+              <defs>
+                <linearGradient id="uGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#c4b5fd" />
+                  <stop offset="1" stop-color="#7c3aed" />
+                </linearGradient>
+              </defs>
+              <path
+                class="u-stroke"
+                d="M6 7v5.6c0 4.1 3.4 7.4 7.5 7.4s7.5-3.3 7.5-7.4V7"
+                stroke-width="2.15"
+                stroke-linecap="round"
+              />
+              <g class="u-orbit fast">
+                <ellipse
+                  cx="12"
+                  cy="13"
+                  rx="8.6"
+                  ry="2.8"
+                  fill="none"
+                  stroke="#5a31d3"
+                  stroke-opacity=".55"
+                  stroke-width="1.6"
+                  transform="rotate(-18 12 13)"
+                />
+                <circle cx="20.2" cy="11.6" r="1.3" fill="#c4b5fd" />
+              </g>
+              <circle cx="14" cy="7" r="1.4" fill="#c4b5fd" />
+            </svg>
+          </div>
+          <span class="font-semibold tracking-tight">Unisyn AI</span>
+        </div>
+
+        <button
+          id="settingsBtn"
+          class="btn-ghost px-3 py-2 rounded-xl ring-soft"
+          title="Settings"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            class="w-5 h-5"
+          >
+            <path
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z M19.4 15a1.6 1.6 0 0 0 .32 1.76l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.6 1.6 0 0 0 15 19.4a1.6 1.6 0 0 0-1 .2 1.6 1.6 0 0 1-2 0 1.6 1.6 0 0 0-1 .2 1.6 1.6 0 0 0-1.76-.32l-.06.03a2 2 0 1 1-2.83-2.83l.06-.06A1.6 1.6 0 0 0 4.6 15a1.6 1.6 0 0 0-.2-1 1.6 1.6 0 0 1 0-2 1.6 1.6 0 0 0 .2-1 1.6 1.6 0 0 0-.2-1L4.34 8a2 2 0 1 1 2.83-2.83l.06.06A1.6 1.6 0 0 0 8 4.6a1.6 1.6 0 0 0 1-.2 1.6 1.6 0 0 1 2 0 1.6 1.6 0 0 0 1 .2 1.6 1.6 0 0 0 1.76.32l.06-.03a2 2 0 1 1 2.83 2.83l-.06.06A1.6 1.6 0 0 0 19.4 9a1.6 1.6 0 0 0 .2 1 1.6 1.6 0 0 1 0 2 1.6 1.6 0 0 0-.2 1z"
+            />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="min-h-[calc(100%-64px)] flex flex-col">
+      <section class="flex-1 flex items-center justify-center">
+        <div class="w-full max-w-5xl px-4 text-center">
+          <!-- Center Logo + Title -->
+          <div class="flex flex-col items-center mb-8">
+            <div
+              class="grid place-items-center w-16 h-16 rounded-full bg-zinc-900 ring-soft mb-4 u-glow"
+            >
+              <!-- Hero-size animated logo -->
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 64 64"
+                fill="none"
+                aria-label="Unisyn AI"
+              >
+                <defs>
+                  <linearGradient id="uGradHero" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#c4b5fd" />
+                    <stop offset="1" stop-color="#7c3aed" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M16 18v16c0 10 8 18 18 18s18-8 18-18V18"
+                  stroke="url(#uGradHero)"
+                  stroke-width="4"
+                  stroke-linecap="round"
+                />
+                <g class="u-orbit fast">
+                  <ellipse
+                    cx="34"
+                    cy="38"
+                    rx="22"
+                    ry="7"
+                    fill="none"
+                    stroke="#5a31d3"
+                    stroke-opacity=".55"
+                    stroke-width="2.6"
+                    transform="rotate(-18 34 38)"
+                  />
+                  <circle cx="54" cy="33" r="3.2" fill="#c4b5fd" />
+                </g>
+                <g class="u-orbit slow">
+                  <ellipse
+                    cx="34"
+                    cy="38"
+                    rx="16"
+                    ry="5"
+                    fill="none"
+                    stroke="#9d7cf7"
+                    stroke-opacity=".35"
+                    stroke-width="2"
+                    transform="rotate(14 34 38)"
+                  />
+                </g>
+                <circle cx="38" cy="20" r="3.2" fill="#c4b5fd" />
+              </svg>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight">
+              Unisyn AI
+            </h1>
+            <p class="mt-2 text-sm text-zinc-400">Many minds, one answer.</p>
+          </div>
+
+          <!-- Prompt + Model Picker (Choose models sits next to Send) -->
+          <div class="relative max-w-3xl mx-auto">
+            <div class="glass rounded-pill px-4 sm:px-6 py-2 sm:py-3 ring-soft">
+              <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-2">
+                  <input
+                    id="queryInput"
+                    type="text"
+                    placeholder="What do you want to know?"
+                    class="flex-1 bg-transparent outline-none placeholder-gray text-base sm:text-lg"
+                  />
+
+                  <!-- Choose models button -->
+                  <div class="relative">
+                    <button
+                      id="modelPickerBtn"
+                      class="px-3 py-1.5 rounded-lg btn-ghost ring-soft text-sm flex items-center gap-1"
+                    >
+                      Choose models
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-4 h-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M6 9l6 6 6-6"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+
+                    <!-- Dropdown menu -->
+                    <div
+                      id="modelMenu"
+                      class="hidden absolute right-0 mt-2 w-[22rem] bg-bg-soft/80 backdrop-blur border border-zinc-800 rounded-xl p-3 text-left z-10"
+                    >
+                      <!-- Use all is inside menu -->
+                      <label
+                        class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/5 mb-2"
+                      >
+                        <input
+                          type="checkbox"
+                          id="pickerUseAll"
+                          class="rounded"
+                        />
+                        <span class="text-sm">Use all LLMs</span>
+                      </label>
+
+                      <div
+                        id="modelChecklist"
+                        class="grid grid-cols-1 sm:grid-cols-2 gap-2"
+                      ></div>
+
+                      <div class="mt-3 flex justify-end gap-2">
+                        <button
+                          id="pickerClear"
+                          class="px-3 py-1.5 rounded-lg btn-ghost ring-soft text-sm"
+                        >
+                          Clear
+                        </button>
+                        <button
+                          id="pickerClose"
+                          class="px-3 py-1.5 rounded-lg bg-zinc-100 text-zinc-900 text-sm"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    id="sendBtn"
+                    class="grid place-items-center w-10 h-10 rounded-full bg-zinc-100 text-zinc-900 hover:bg-white"
+                    title="Send"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-5 h-5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <path
+                        d="M5 12h14M12 5l7 7-7 7"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                <p
+                  id="hint"
+                  class="text-xs text-zinc-500 text-left pl-1 hidden"
+                >
+                  Choose at least one model or enable “Use all LLMs”.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <p class="mt-6 text-xs text-zinc-500">
+            By messaging <b>Unisyn AI</b>, you agree to our
+            <a href="#" class="underline decoration-dotted">Terms</a> and
+            <a href="#" class="underline decoration-dotted">Privacy Policy</a>.
+          </p>
+        </div>
+      </section>
+
+      <!-- Results -->
+      <section
+        id="resultsWrap"
+        class="hidden border-t border-zinc-800/60 bg-[#0b0d10]"
+      >
+        <div id="resultsContainer" class="max-w-6xl mx-auto px-4 py-6">
+          <!-- Header with TTS controls -->
+          <div
+            class="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+          >
+            <div id="status" class="text-sm text-zinc-400"></div>
+
+            <div class="flex items-center gap-2">
+              <select
+                id="voiceSelect"
+                class="text-sm bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-1.5"
+              >
+                <option>Loading voices…</option>
+              </select>
+              <label class="text-xs text-zinc-400 hidden sm:inline">Rate</label>
+              <input
+                id="rateRange"
+                type="range"
+                min="0.6"
+                max="1.4"
+                step="0.05"
+                value="1"
+                class="w-24 accent-zinc-200"
+              />
+              <button
+                id="readAllBtn"
+                class="px-3 py-1.5 rounded-lg btn-ghost ring-soft text-sm"
+              >
+                Read all
+              </button>
+              <button
+                id="stopTTSBtn"
+                class="px-3 py-1.5 rounded-lg btn-ghost ring-soft text-sm"
+              >
+                Stop
+              </button>
+              <button
+                id="viewAnalysisBtn"
+                class="px-3 py-1.5 rounded-lg btn-ghost ring-soft text-sm"
+              >
+                View analysis
+              </button>
+            </div>
+          </div>
+
+          <!-- Visibility toggles -->
+          <div class="flex items-center justify-between mb-3">
+            <div id="chipRow" class="flex flex-wrap gap-2"></div>
+            <div class="flex gap-2">
+              <button
+                id="showAllBtn"
+                class="px-2.5 py-1 rounded-lg btn-ghost ring-soft text-xs"
+              >
+                Show all
+              </button>
+              <button
+                id="hideAllBtn"
+                class="px-2.5 py-1 rounded-lg btn-ghost ring-soft text-xs"
+              >
+                Hide all
+              </button>
+            </div>
+          </div>
+
+          <!-- Auto-fit grid -->
+          <div
+            id="results"
+            class="grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(340px,1fr))]"
+          ></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Settings modal -->
+    <div id="settingsModal" class="hidden fixed inset-0 z-40">
+      <div class="absolute inset-0 bg-black/60"></div>
+      <div
+        class="relative max-w-lg mx-auto mt-24 bg-bg-soft/90 backdrop-blur border border-zinc-800 rounded-2xl p-5"
+      >
+        <h3 class="text-lg font-semibold">Settings</h3>
+        <label class="block text-sm mb-1">API Base URL</label>
+        <input
+          id="apiBaseInput"
+          type="text"
+          class="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 outline-none"
+          placeholder="http://localhost:8787"
+        />
+        <div class="mt-4 flex justify-end gap-2">
+          <button
+            id="settingsCancel"
+            class="px-3 py-1.5 rounded-xl btn-ghost ring-soft"
+          >
+            Cancel
+          </button>
+          <button
+            id="settingsSave"
+            class="px-3 py-1.5 rounded-xl bg-zinc-100 text-zinc-900"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analysis modal -->
+    <div id="analysisModal" class="hidden fixed inset-0 z-40">
+      <div class="absolute inset-0 bg-black/60"></div>
+      <div
+        class="relative max-w-4xl mx-auto mt-12 bg-bg-soft/90 backdrop-blur border border-zinc-800 rounded-2xl p-5"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-semibold">Ethics Analysis</h3>
+          <button
+            id="analysisClose"
+            class="px-2 py-1 rounded-lg btn-ghost ring-soft"
+          >
+            Close
+          </button>
+        </div>
+        <div class="h-[420px]">
+          <canvas id="analysisChart" class="w-full h-full"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Load order: app.js then index.js -->
+    <script src="./app.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "ai-chatbot",
+  "version": "1.0.0",
+  "description": "- Jaime Da Cruz\r - Okwukwechukwu Mbajiorgu\r - Andile Dlongwana",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndilexDlongs/ai-chatbot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AndilexDlongs/ai-chatbot/issues"
+  },
+  "homepage": "https://github.com/AndilexDlongs/ai-chatbot#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }, 
+  "type": "module",
+  "dependencies": {
+    "express": "^4.21.0",
+    "cors": "^2.8.5"
+  }
+}
