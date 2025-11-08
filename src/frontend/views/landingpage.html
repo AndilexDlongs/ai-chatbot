@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unisyn AI – One App. Infinite Intelligence.</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              bg: { DEFAULT: '#0d0f12', soft: '#13161b' },
+              accent: '#8b5cf6',
+              ring: '#1f2430',
+            },
+            boxShadow: {
+              subtle: '0 1px 3px rgba(0,0,0,.35)',
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-bg text-white font-sans overflow-x-hidden">
+    <!-- Hero -->
+    <section
+      class="min-h-screen flex flex-col items-center justify-center text-center px-6 animate-fadeIn"
+    >
+      <img
+        src="/assets/logo.png"
+        alt="Unisyn AI Logo"
+        class="w-32 h-32 mb-6 drop-shadow-lg"
+      />
+      <h1 class="text-5xl md:text-6xl font-bold mb-4">
+        One App. <span class="text-accent">Infinite Intelligence.</span>
+      </h1>
+      <p class="text-lg text-gray-400 max-w-xl mb-8">
+        Experience <span class="text-accent font-semibold">Unisyn AI</span> —
+        where the world’s best AI models think, reason, and create together.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a
+          href="/chat.html"
+          class="px-8 py-3 bg-accent text-white rounded-full font-semibold hover:bg-purple-700 transition"
+          >Try It Now</a
+        >
+        <a
+          href="#features"
+          class="px-8 py-3 border border-accent text-accent rounded-full font-semibold hover:bg-purple-900 transition"
+          >Learn More</a
+        >
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="bg-bg-soft py-20 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-12">
+        Why Choose <span class="text-accent">Unisyn AI?</span>
+      </h2>
+
+      <div
+        class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6 animate-slideUp"
+      >
+        <div
+          class="p-6 bg-[#1a1d24] rounded-2xl shadow-subtle hover:scale-105 transition"
+        >
+          <h3 class="text-xl font-semibold text-accent mb-3">
+            Multi-Model Power
+          </h3>
+          <p class="text-gray-400">
+            Chat with GPT-5, Claude, Llama, DeepSeek, and others — all in one
+            synchronized interface.
+          </p>
+        </div>
+
+        <div
+          class="p-6 bg-[#1a1d24] rounded-2xl shadow-subtle hover:scale-105 transition"
+        >
+          <h3 class="text-xl font-semibold text-accent mb-3">Smart Routing</h3>
+          <p class="text-gray-400">
+            Unisyn intelligently chooses the best model for your prompt,
+            balancing cost, speed, and accuracy.
+          </p>
+        </div>
+
+        <div
+          class="p-6 bg-[#1a1d24] rounded-2xl shadow-subtle hover:scale-105 transition"
+        >
+          <h3 class="text-xl font-semibold text-accent mb-3">Unified Memory</h3>
+          <p class="text-gray-400">
+            Keep all AI conversations in one synchronized memory, securely
+            accessible anytime.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Showcase -->
+    <section class="bg-bg py-20 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-10">
+        See <span class="text-accent">Unisyn AI</span> in Action
+      </h2>
+      <div class="max-w-5xl mx-auto px-6">
+        <img
+          src="/assets/app-preview.png"
+          alt="Unisyn App Preview"
+          class="rounded-2xl shadow-2xl w-full mx-auto hover:scale-[1.02] transition"
+        />
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="bg-bg-soft py-20 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-10">
+        What People Are Saying
+      </h2>
+      <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto px-6">
+        <div class="bg-[#1a1d24] p-6 rounded-xl text-left shadow-subtle">
+          <p class="text-gray-300 italic">
+            “Unisyn AI feels like having all major AI minds working together for
+            me.”
+          </p>
+          <p class="text-accent font-semibold mt-3">— Beta Tester</p>
+        </div>
+
+        <div class="bg-[#1a1d24] p-6 rounded-xl text-left shadow-subtle">
+          <p class="text-gray-300 italic">
+            “No more switching apps — Unisyn gives me the best model answer
+            every time.”
+          </p>
+          <p class="text-accent font-semibold mt-3">— Early Adopter</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section
+      class="bg-gradient-to-r from-purple-700 to-fuchsia-800 py-20 text-center"
+    >
+      <h2 class="text-4xl font-bold text-white mb-6">
+        Ready to Experience the Future of AI?
+      </h2>
+      <a
+        href="/chat.html"
+        class="px-10 py-4 bg-black text-accent font-semibold rounded-full hover:bg-gray-900 transition"
+        >Launch Unisyn Now</a
+      >
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-bg py-10 text-center text-gray-500 text-sm">
+      <p>© 2025 Unisyn AI. All rights reserved.</p>
+      <p class="mt-2">Built with ❤️ in South Africa</p>
+    </footer>
+
+    <!-- Animations -->
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 1.2s ease-out;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-slideUp {
+        animation: slideUp 1.2s ease-out;
+      }
+    </style>
+  </body>
+</html>
