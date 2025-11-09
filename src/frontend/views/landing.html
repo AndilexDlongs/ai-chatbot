@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Unisyn AI – One App. Infinite Intelligence.</title>
+    <title>Unisyn AI – Many Minds, One Conversation</title>
 
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,9 +15,7 @@
             colors: {
               bg: { DEFAULT: '#0d0f12', soft: '#13161b' },
               accent: '#8b5cf6',
-              ring: '#1f2430',
             },
-            boxShadow: { subtle: '0 1px 3px rgba(0,0,0,.35)' },
             fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
           },
         },
@@ -51,7 +49,24 @@
         }
       }
 
-      /* --- Animations --- */
+      /* --- Starry Background --- */
+      body {
+        background: radial-gradient(circle at 50% 30%, #12141b, #0a0b10);
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      canvas#stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      /* --- Section Animation --- */
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -65,34 +80,22 @@
       .animate-fadeIn {
         animation: fadeIn 1.2s ease-out;
       }
-
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateY(40px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .animate-slideUp {
-        animation: slideUp 1.2s ease-out;
-      }
     </style>
   </head>
 
-  <body class="bg-bg text-white font-sans overflow-x-hidden">
+  <body class="text-white font-sans overflow-x-hidden">
+    <!-- Stars Background -->
+    <canvas id="stars"></canvas>
+
     <!-- Hero -->
     <section
-      class="min-h-screen flex flex-col items-center justify-center text-center px-6 animate-fadeIn"
+      class="relative min-h-screen flex flex-col items-center justify-center text-center px-6 animate-fadeIn z-10"
     >
-      <!-- Animated Unisyn AI Logo -->
       <div class="u-glow mb-6">
         <svg
-          width="96"
-          height="96"
-          viewBox="0 0 64 64"
+          width="120"
+          height="120"
+          viewBox="0 0 70 70"
           fill="none"
           aria-label="Unisyn AI"
         >
@@ -140,125 +143,135 @@
       </div>
 
       <h1 class="text-5xl md:text-6xl font-bold mb-4">
-        One App. <span class="text-accent">Infinite Intelligence.</span>
+        Many Minds, <span class="text-accent">One Conversation</span>
       </h1>
-      <p class="text-lg text-gray-400 max-w-xl mb-8">
-        Experience <span class="text-accent font-semibold">Unisyn AI</span> —
-        where the world’s best AI models think, reason, and create together.
+      <p class="text-lg text-gray-300 max-w-2xl mb-8">
+        Meet <span class="text-accent font-semibold">Unisyn AI</span> — a place
+        where you can talk to different AIs together, like a group chat of
+        brilliant thinkers. Ask one question and watch ideas unfold from every
+        angle.
       </p>
       <div class="flex flex-wrap justify-center gap-4">
         <a
           href="/chat"
           class="px-8 py-3 bg-accent text-white rounded-full font-semibold hover:bg-purple-700 transition"
-          >Try It Now</a
+          >Start a Chat</a
         >
         <a
-          href="#features"
+          href="#about"
           class="px-8 py-3 border border-accent text-accent rounded-full font-semibold hover:bg-purple-900 transition"
           >Learn More</a
         >
       </div>
     </section>
 
-    <!-- Features -->
-    <section id="features" class="bg-bg-soft py-20 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold mb-12">
-        Why Choose <span class="text-accent">Unisyn AI?</span>
-      </h2>
+    <!-- About -->
+    <section id="about" class="bg-bg-soft/70 py-20 text-center z-10 relative">
+      <h2 class="text-3xl md:text-4xl font-bold mb-10">What Is Unisyn AI?</h2>
+      <p class="text-gray-300 max-w-3xl mx-auto text-lg leading-relaxed px-6">
+        Unisyn AI lets you chat with multiple AIs at once — each with their own
+        way of thinking. Some explain clearly, others imagine creatively, and
+        some go straight to the point. Instead of switching between apps, you
+        can see every perspective in a single, smart conversation.
+      </p>
+    </section>
 
-      <div
-        class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6 animate-slideUp"
-      >
-        <div
-          class="p-6 bg-[#1a1d24] rounded-2xl shadow-subtle hover:scale-105 transition"
-        >
+    <!-- How It Works -->
+    <section class="bg-bg/70 py-20 text-center z-10 relative">
+      <h2 class="text-3xl md:text-4xl font-bold mb-10">How It Works</h2>
+      <div class="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto px-6">
+        <div class="p-6 bg-[#1a1d24]/80 rounded-2xl hover:scale-105 transition">
+          <h3 class="text-xl font-semibold text-accent mb-3">1. Ask</h3>
+          <p class="text-gray-400">
+            Type your question once — no need to choose who to ask or what to
+            use.
+          </p>
+        </div>
+
+        <div class="p-6 bg-[#1a1d24]/80 rounded-2xl hover:scale-105 transition">
           <h3 class="text-xl font-semibold text-accent mb-3">
-            Multi-Model Power
+            2. Let Unisyn Decide
           </h3>
           <p class="text-gray-400">
-            Chat with GPT-5, Claude, Llama, DeepSeek, and others — all in one
-            synchronized interface.
+            Unisyn automatically knows which AI fits your question — whether you
+            need facts, creativity, or reasoning. It sends your message to the
+            right minds. Or, if you’d prefer, you can invite several AIs into
+            the same chat and hear them all together.
           </p>
         </div>
 
-        <div
-          class="p-6 bg-[#1a1d24] rounded-2xl shadow-subtle hover:scale-105 transition"
-        >
-          <h3 class="text-xl font-semibold text-accent mb-3">Smart Routing</h3>
+        <div class="p-6 bg-[#1a1d24]/80 rounded-2xl hover:scale-105 transition">
+          <h3 class="text-xl font-semibold text-accent mb-3">3. Discover</h3>
           <p class="text-gray-400">
-            Unisyn intelligently chooses the best model for your prompt,
-            balancing cost, speed, and accuracy.
+            Watch different AIs respond in one shared chat, compare answers, and
+            find the one that fits you best.
           </p>
-        </div>
-
-        <div
-          class="p-6 bg-[#1a1d24] rounded-2xl shadow-subtle hover:scale-105 transition"
-        >
-          <h3 class="text-xl font-semibold text-accent mb-3">Unified Memory</h3>
-          <p class="text-gray-400">
-            Keep all AI conversations in one synchronized memory, securely
-            accessible anytime.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Showcase -->
-    <section class="bg-bg py-20 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold mb-10">
-        See <span class="text-accent">Unisyn AI</span> in Action
-      </h2>
-      <div class="max-w-5xl mx-auto px-6">
-        <img
-          src="/assets/app-preview.png"
-          alt="Unisyn App Preview"
-          class="rounded-2xl shadow-2xl w-full mx-auto hover:scale-[1.02] transition"
-        />
-      </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section class="bg-bg-soft py-20 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold mb-10">
-        What People Are Saying
-      </h2>
-      <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto px-6">
-        <div class="bg-[#1a1d24] p-6 rounded-xl text-left shadow-subtle">
-          <p class="text-gray-300 italic">
-            “Unisyn AI feels like having all major AI minds working together for
-            me.”
-          </p>
-          <p class="text-accent font-semibold mt-3">— Beta Tester</p>
-        </div>
-
-        <div class="bg-[#1a1d24] p-6 rounded-xl text-left shadow-subtle">
-          <p class="text-gray-300 italic">
-            “No more switching apps — Unisyn gives me the best model answer
-            every time.”
-          </p>
-          <p class="text-accent font-semibold mt-3">— Early Adopter</p>
         </div>
       </div>
     </section>
 
     <!-- CTA -->
     <section
-      class="bg-gradient-to-r from-purple-700 to-fuchsia-800 py-20 text-center"
+      class="bg-gradient-to-r from-purple-700 to-fuchsia-800 py-20 text-center relative z-10"
     >
       <h2 class="text-4xl font-bold text-white mb-6">
-        Ready to Experience the Future of AI?
+        Ready to Chat With Every Mind?
       </h2>
+      <p class="text-gray-200 mb-8 text-lg">
+        Join the smarter way to ask, learn, and explore — together with every AI
+        voice.
+      </p>
       <a
         href="/chat"
         class="px-10 py-4 bg-black text-accent font-semibold rounded-full hover:bg-gray-900 transition"
-        >Launch Unisyn Now</a
+        >Launch Unisyn AI</a
       >
     </section>
 
     <!-- Footer -->
-    <footer class="bg-bg py-10 text-center text-gray-500 text-sm">
+    <footer
+      class="bg-[#0b0d10] py-10 text-center text-gray-500 text-sm relative z-10"
+    >
       <p>© 2025 Unisyn AI. All rights reserved.</p>
       <p class="mt-2">Built with ❤️ in South Africa</p>
     </footer>
+
+    <!-- Starfield Script -->
+    <script>
+      const canvas = document.getElementById('stars');
+      const ctx = canvas.getContext('2d');
+      let stars = [];
+      let w, h;
+
+      function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        stars = Array(120)
+          .fill()
+          .map(() => ({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            r: Math.random() * 1.5 + 0.5,
+            s: Math.random() * 0.7 + 0.3,
+          }));
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        stars.forEach((star) => {
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI);
+          ctx.fill();
+          star.y += star.s;
+          if (star.y > h) star.y = 0;
+        });
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      draw();
+    </script>
   </body>
 </html>
