@@ -143,19 +143,77 @@
         animation-duration: 12s;
         animation-direction: reverse;
       }
-      /* Full-width textbox mode after first message */
+            /* Sidebar width is a CSS variable so the textbox can follow it */
+      :root {
+        --sidebar-width: 5rem;
+      }
+
+      /* Sidebar collapsed / expanded */
+      aside.sidebar {
+        width: 5rem;
+        align-items: center;
+        transition: width 0.25s ease;
+      }
+
+      aside.sidebar.sidebar-expanded {
+        width: 16rem;
+        align-items: stretch;
+      }
+
+      /* Text labels inside sidebar: hidden when collapsed */
+      .sidebar .sidebar-label {
+        display: none;
+        white-space: nowrap;
+      }
+
+      /* Show labels when expanded */
+      .sidebar.sidebar-expanded .sidebar-label {
+        display: inline;
+      }
+      /* GLOBAL DARK SCROLLBARS */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(139,92,246,0.35) #0c0e11; /* thumb + track */
+      }
+
+      *::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      *::-webkit-scrollbar-track {
+        background: #0c0e11; /* dark track */
+      }
+
+      *::-webkit-scrollbar-thumb {
+        background: rgba(139,92,246,0.45); /* purple thumb */
+        border-radius: 8px;
+      }
+
+
+      /* Textbox fixed at bottom, respecting sidebar width 
       .fullwidth-textbox {
         position: fixed;
         bottom: 0;
-        left: 5rem;
+        left: var(--sidebar-width);
         right: 0;
-        width: 90%;
-        margin: 0 auto;
+        width: calc(90% - var(--sidebar-width));
         border-top: 1px solid rgba(255, 255, 255, 0.08);
         background: rgba(13, 15, 18, 0.95);
         backdrop-filter: blur(10px);
         padding: 1rem 2rem;
         z-index: 40;
+      } */
+
+      /* Chat container: same column width + white outline so you can see it */
+      /*.fullwidth-chat {
+        width: calc(100% - 0rem); /* keep full width of its column */
+        /* border: 1px solid #ffffff; */
+        /*border-radius: 0.75rem;
+        padding: 1rem;
+      }*/
+      .ai-message {
+        display: flex;
+        justify-content: flex-start; /* left align AI + thinking */
       }
       .fade-out {
         opacity: 0;
@@ -166,6 +224,18 @@
         display: flex;
         justify-content: flex-end;
       }
+            /* (no more fullwidth textbox – we keep it inline with the chat section) */
+
+      /* Chat container outline so you can see its bounds when chatting */
+      #chatContainer.chat-framed {
+        /* border: 1px solid #ffffff; */
+        border-radius: 0.75rem;
+        padding: 1rem;
+      }
+      #chatShell {
+        padding-bottom: 120px; /* keep messages above the fixed textbox */
+      }
+
       #llmDropdown::-webkit-scrollbar {
         width: 6px;
       }
@@ -174,6 +244,7 @@
         border-radius: 6px;
       }
       #llmDropdown {
+        left: calc(var(--sidebar-width) + 1rem);
         animation: fadeIn 0.25s ease-out;
       }
       #llmDropdown input[disabled] {
@@ -210,6 +281,31 @@
       }
       .animate-toast-out {
         animation: toastOut 0.3s ease-in forwards;
+      }
+      /* DARK MODE CHECKBOXES */
+      input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid #4b5563; /* dark border */
+        border-radius: 4px;
+        background-color: #1a1b1f; /* dark background */
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      input[type="checkbox"]:checked {
+        background-color: #8b5cf6; /* brand purple */
+        border-color: #8b5cf6;
+        box-shadow: 0 0 6px rgba(139, 92, 246, 0.6);
+      }
+
+      input[type="checkbox"]:disabled {
+        background-color: #111216 !important;
+        border-color: #333 !important;
+        opacity: 0.4;
+        cursor: not-allowed;
       }
     </style>
   </head>
@@ -289,26 +385,37 @@
     </header>
 
     <!-- Main -->
-    <main class="h-screen flex bg-[#0d0f12] text-zinc-200">
+    <main class="min-h-screen flex bg-[#0d0f12] text-zinc-200">
     <!-- Sidebar -->
-    <aside class="w-20 flex flex-col items-center justify-start py-6 border-r border-zinc-800 bg-[#0c0e11]">
-        <!-- Top: Logo -->
-        <div class="grid place-items-center w-10 h-10 rounded-full bg-zinc-900 ring-soft u-glow">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-label="Unisyn AI">
+    <!-- Sidebar -->
+    <aside
+      id="sidebar"
+      class="sidebar flex flex-col justify-between py-6 border-r border-zinc-800 bg-[#0c0e11] transition-all duration-300"
+    >
+      <!-- Top: Logo (toggle button) -->
+      <button
+        id="sidebarToggle"
+        class="flex items-center gap-3 px-3 mb-8 focus:outline-none"
+        title="Toggle sidebar"
+      >
+        <div
+          class="grid place-items-center w-10 h-10 rounded-full bg-zinc-900 ring-soft u-glow"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-label="Unisyn AI">
             <defs>
-            <linearGradient id="uGrad" x1="0" y1="0" x2="1" y2="1">
+              <linearGradient id="uGrad" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0" stop-color="#c4b5fd" />
                 <stop offset="1" stop-color="#7c3aed" />
-            </linearGradient>
+              </linearGradient>
             </defs>
             <path
-            class="u-stroke"
-            d="M6 7v5.6c0 4.1 3.4 7.4 7.5 7.4s7.5-3.3 7.5-7.4V7"
-            stroke-width="2.15"
-            stroke-linecap="round"
+              class="u-stroke"
+              d="M6 7v5.6c0 4.1 3.4 7.4 7.5 7.4s7.5-3.3 7.5-7.4V7"
+              stroke-width="2.15"
+              stroke-linecap="round"
             />
             <g class="u-orbit fast">
-            <ellipse
+              <ellipse
                 cx="12"
                 cy="13"
                 rx="8.6"
@@ -318,39 +425,60 @@
                 stroke-opacity=".55"
                 stroke-width="1.6"
                 transform="rotate(-18 12 13)"
-            />
-            <circle cx="20.2" cy="11.6" r="1.3" fill="#c4b5fd" />
+              />
+              <circle cx="20.2" cy="11.6" r="1.3" fill="#c4b5fd" />
             </g>
             <circle cx="14" cy="7" r="1.4" fill="#c4b5fd" />
-        </svg>
+          </svg>
         </div>
+        <span class="sidebar-label text-sm font-semibold text-zinc-100">
+          Unisyn AI
+        </span>
+      </button>
 
-        <!-- Middle: Start new chat -->
+      <!-- Middle: Chats + New chat -->
+      <div class="flex-1 flex flex-col gap-2 px-2 mt-2 w-full">
+        <!-- Example chat list item -->
         <button
-        class="flex flex-col items-center text-xs text-zinc-400 hover:text-zinc-200 transition"
-        title="Start new chat"
+          class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-zinc-300 hover:bg-zinc-800/80 w-full text-left"
         >
-        <svg
+          <span class="inline-block w-2 h-2 rounded-full bg-indigo-500"></span>
+          <span class="sidebar-label truncate">Current chat</span>
+        </button>
+
+        <!-- New chat -->
+        <button
+          class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-zinc-300 hover:bg-zinc-800/80 w-full text-left"
+          title="Start new chat"
+        >
+          <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="w-6 h-6 mb-1 text-zinc-300"
+            class="w-5 h-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
             stroke-width="2"
-        >
+          >
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-        </svg>
-        New
+          </svg>
+          <span class="sidebar-label">New chat</span>
         </button>
+      </div>
 
-        <!-- Bottom: Profile image -->
-        <div class="w-10 h-10 rounded-full overflow-hidden border border-zinc-700">
-        <img
+      <!-- Bottom: Profile -->
+      <button
+        class="flex items-center gap-3 px-3 mt-6 mb-2 text-sm text-zinc-300 hover:bg-zinc-800/80 w-full text-left"
+        title="Profile"
+      >
+        <div class="w-9 h-9 rounded-full overflow-hidden border border-zinc-700">
+          <img
             src="https://via.placeholder.com/40x40.png?text=User"
             alt="Profile"
             class="w-full h-full object-cover"
-        />
+          />
         </div>
+        <span class="sidebar-label">Profile</span>
+      </button>
     </aside>
 
     <!-- LLM Dropdown -->
@@ -623,102 +751,104 @@
 
     <!-- Main content area -->
     <section class="flex-1 flex flex-col items-center justify-center text-center px-4">
-        <div class="w-full max-w-3xl">
+      <div id="chatShell" class="w-full max-w-6xl">
         <!-- Center Logo + Title -->
         <div class="flex flex-col items-center mb-8">
-            <div class="grid place-items-center w-16 h-16 rounded-full bg-zinc-900 ring-soft mb-4 u-glow">
+          <div class="grid place-items-center w-16 h-16 rounded-full bg-zinc-900 ring-soft mb-4 u-glow">
+            <!-- logo svg unchanged -->
             <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-label="Unisyn AI">
-                <defs>
+              <defs>
                 <linearGradient id="uGradHero" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stop-color="#c4b5fd" />
-                    <stop offset="1" stop-color="#7c3aed" />
+                  <stop offset="0" stop-color="#c4b5fd" />
+                  <stop offset="1" stop-color="#7c3aed" />
                 </linearGradient>
-                </defs>
-                <path
+              </defs>
+              <path
                 d="M16 18v16c0 10 8 18 18 18s18-8 18-18V18"
                 stroke="url(#uGradHero)"
                 stroke-width="4"
                 stroke-linecap="round"
-                />
-                <g class="u-orbit fast">
+              />
+              <g class="u-orbit fast">
                 <ellipse
-                    cx="34"
-                    cy="38"
-                    rx="22"
-                    ry="7"
-                    fill="none"
-                    stroke="#5a31d3"
-                    stroke-opacity=".55"
-                    stroke-width="2.6"
-                    transform="rotate(-18 34 38)"
+                  cx="34"
+                  cy="38"
+                  rx="22"
+                  ry="7"
+                  fill="none"
+                  stroke="#5a31d3"
+                  stroke-opacity=".55"
+                  stroke-width="2.6"
+                  transform="rotate(-18 34 38)"
                 />
                 <circle cx="54" cy="33" r="3.2" fill="#c4b5fd" />
-                </g>
-                <g class="u-orbit slow">
+              </g>
+              <g class="u-orbit slow">
                 <ellipse
-                    cx="34"
-                    cy="38"
-                    rx="16"
-                    ry="5"
-                    fill="none"
-                    stroke="#9d7cf7"
-                    stroke-opacity=".35"
-                    stroke-width="2"
-                    transform="rotate(14 34 38)"
+                  cx="34"
+                  cy="38"
+                  rx="16"
+                  ry="5"
+                  fill="none"
+                  stroke="#9d7cf7"
+                  stroke-opacity=".35"
+                  stroke-width="2"
+                  transform="rotate(14 34 38)"
                 />
-                </g>
-                <circle cx="38" cy="20" r="3.2" fill="#c4b5fd" />
+              </g>
+              <circle cx="38" cy="20" r="3.2" fill="#c4b5fd" />
             </svg>
-            </div>
-            <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight">Unisyn AI</h1>
-            <p class="mt-2 text-sm text-zinc-400">Many minds, one answer.</p>
+          </div>
+          <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight">Unisyn AI</h1>
+          <p class="mt-2 text-sm text-zinc-400">Many minds, one answer.</p>
         </div>
-        
+
         <!-- Chat container -->
         <div
           id="chatContainer"
-          class="flex flex-col gap-4 p-4 overflow-y-auto"
-          style="max-height: 70vh; padding-left: calc(5rem + 1rem);"
+          class="flex flex-col gap-4 p-4 w-full text-left items-stretch"
         ></div>
 
+
         <!-- Textbox -->
-        <div class="glass rounded-pill px-4 sm:px-6 py-2 sm:py-3 ring-soft">
-            <div class="flex items-center gap-2">
-            <input
-                id="queryInput"
-                type="text"
-                placeholder="What do you want to know?"
-                class="flex-1 bg-transparent outline-none placeholder-gray text-base sm:text-lg"
-            />
+        <div class="glass rounded-pill px-4 sm:px-6 py-2 sm:py-3 ring-soft mt-3">
+          <div class="flex items-center gap-2">
+            <textarea
+              id="queryInput"
+              rows="1"
+              placeholder="What do you want to know?"
+              class="flex-1 bg-transparent outline-none placeholder-gray text-base sm:text-lg resize-none max-h-40 leading-relaxed"
+            ></textarea>
             <button
-                id="sendBtn"
-                class="grid place-items-center w-10 h-10 rounded-full bg-zinc-100 text-zinc-900 hover:bg-white"
-                title="Send"
+              id="sendBtn"
+              class="grid place-items-center w-10 h-10 rounded-full bg-zinc-100 text-zinc-900 hover:bg-white"
+              title="Send"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none">
                 <path
-                    d="M5 12h14M12 5l7 7-7 7"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                  d="M5 12h14M12 5l7 7-7 7"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
                 />
-                </svg>
-            </button>
-            </div>
-        </div>
-          <!-- "Who do you want to talk to?" Button -->
-          <div id="llmButtonContainer" class="mt-3 text-left transition-all duration-500">
-            <button
-              id="chooseLLMBtn"
-              class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm text-zinc-200 border border-zinc-700 transition"
-            >
-              👥 Who do you want to talk to?
+              </svg>
             </button>
           </div>
-
         </div>
+
+        <!-- "Who do you want to talk to?" Button -->
+        <div id="llmButtonContainer" class="mt-3 text-left transition-all duration-500">
+          <button
+            id="chooseLLMBtn"
+            class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm text-zinc-200 border border-zinc-700 transition"
+          >
+            👥 Who do you want to talk to?
+          </button>
+        </div>
+      </div>
     </section>
+
 </main>
 
 
