@@ -27,6 +27,9 @@
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+
 
     <!-- Brand favicon (static SVG) -->
     <link
@@ -148,6 +151,95 @@
         --sidebar-width: 4rem;
       }
 
+      /* Compact markdown rhythm */
+      .msg-text {
+        --md-gap: .35rem;
+        --md-gap-lg: .55rem;
+      }
+      .msg-text > * { margin: 0; }
+      .msg-text p, .msg-text ul, .msg-text ol, .msg-text pre,
+      .msg-text blockquote, .msg-text table { margin: var(--md-gap) 0; }
+      .msg-text h1, .msg-text h2, .msg-text h3 {
+        margin: var(--md-gap-lg) 0 var(--md-gap);
+        line-height: 1.25;
+      }
+      .msg-text h4, .msg-text h5, .msg-text h6 { margin: .4rem 0 .25rem; }
+      .msg-text ul { list-style: disc; padding-left: 1.15rem; margin: .25rem 0 .35rem; }
+      .msg-text ol { list-style: decimal; padding-left: 1.25rem; margin: .25rem 0 .35rem; }
+      .msg-text li { margin: .15rem 0; }
+      .msg-text pre {
+        margin: .4rem 0;
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: .7rem;
+        overflow: hidden;
+      }
+      .msg-text code { background: rgba(255,255,255,.06); padding: .08rem .35rem; border-radius: .35rem; }
+      .msg-text pre code { background: transparent; padding: 0; }
+      /* Make the hit-area a perfect square and center contents */
+      :root{
+        --icon-btn: 34px;   /* button box size */
+        --icon: 18px;       /* glyph size */
+        --icon-radius: .6rem;
+      }
+
+      /* Perfectly centered square hit-area */
+      .icon-btn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        width:var(--icon-btn);
+        height:var(--icon-btn);
+        padding:0;
+        line-height:0;
+        box-sizing:border-box;
+        border:1px solid rgba(255,255,255,.10);
+        border-radius:var(--icon-radius);
+        background:transparent;
+        color:#bbc3d4;
+        transition:transform .08s ease, background .15s ease, color .15s ease;
+      }
+      .icon-btn:hover{ background:rgba(255,255,255,.06); color:#fff; }
+      .icon-btn:active{ transform:scale(.97); }
+
+      /* The SVG itself */
+      .icon{
+        width:var(--icon);
+        height:var(--icon);
+        display:block;
+        margin:0;
+        pointer-events:none;
+      }
+
+      /* Optional quick presets if you want bigger/smaller per context */
+      .icon-btn.sm { --icon-btn: 30px; --icon: 16px; }
+      .icon-btn.md { --icon-btn: 34px; --icon: 18px; }  /* default */
+      .icon-btn.lg { --icon-btn: 38px; --icon: 20px; }
+
+      /* Touch devices: bump size for comfortable tap target */
+      @media (pointer: coarse){
+        :root{ --icon-btn: 38px; --icon: 20px; }
+      }
+
+      .code-block {
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: .8rem;
+      overflow: hidden;
+      background: rgba(255,255,255,.04);
+      margin: .4rem 0;
+    }
+    .code-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .4rem .6rem;
+      background: #0f1115;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      font-size: .75rem; color: #cbd5e1; letter-spacing: .02em;
+    }
+    .code-bar .lang { text-transform: uppercase; opacity: .85; }
+    .code-block pre { margin: 0; background: transparent; padding: .75rem; }
+    .code-copy-btn { border: 1px solid rgba(255,255,255,.1); border-radius: .5rem; width: 28px; height: 28px; display:grid; place-items:center; }
+    .code-copy-btn:hover { background: rgba(255,255,255,.06); }
+
       /* Sidebar collapsed / expanded */
       aside.sidebar {
         width: 4rem;
@@ -251,6 +343,75 @@
         filter: grayscale(1);
         opacity: 0.6;
       }
+      /* --- Chat message layout & wrapping --- */
+      .msg-row { display:flex; gap:12px; width:100%; }
+      .msg-col { flex:1 1 auto; min-width:0; } /* min-width:0 lets text wrap in flex children */
+      .msg-text {
+        white-space: pre-wrap;           /* keep newlines, wrap */
+        overflow-wrap: anywhere;         /* prevent spill */
+        word-break: break-word;          /* extra safety */
+        line-height: 1.6;
+      }
+
+      /* AI: no background / no outline */
+      .msg-ai .msg-text { padding: 2px 0; } /* subtle breathing room */
+
+      /* User bubble styling stays, but ensure wrap */
+      .bubble-user {
+        background: rgb(79 70 229); /* indigo-600 */
+        color: #fff;
+        border-radius: 1rem;
+        border-bottom-right-radius: .25rem;
+        padding: .5rem 1rem;
+        max-width: 70%;
+      }
+
+      /* Avatars / logos */
+      .ai-avatar, .user-avatar {
+        width: 28px; height: 28px;
+        flex: 0 0 28px;
+        border-radius: 9999px;
+        display: grid; place-items: center;
+        background: #0f1115; border: 1px solid rgba(255,255,255,.08);
+        overflow: hidden;
+      }
+      .ai-avatar img { width: 20px; height: 20px; object-fit: contain; }
+
+      /* Action rows */
+      .msg-actions {
+        margin-top: .5rem;
+        display: flex; gap: .375rem;
+        font-size: .85rem;
+        color: #9aa1b1;
+      }
+      .msg-actions button {
+        padding: .25rem .5rem;
+        border-radius: .5rem;
+        border: 1px solid rgba(255,255,255,.08);
+        background: transparent;
+      }
+      .msg-actions button:hover { background: rgba(255,255,255,.06); color: #e5e7eb; }
+
+      /* Place user actions on the right */
+      .msg-actions.user { justify-content: flex-end; }
+      .msg-actions.ai { justify-content: flex-start; }
+
+      /* Thinking dots */
+      .thinking {
+        display:inline-flex; align-items:center; gap:6px;
+        color:#b6bdc8;
+      }
+      .dots { display:inline-flex; gap:4px; }
+      .dots span {
+        width:6px; height:6px; border-radius:9999px; background:#9aa1b1; opacity:.45;
+        animation: blink 1.2s infinite ease-in-out;
+      }
+      .dots span:nth-child(2){ animation-delay:.15s; }
+      .dots span:nth-child(3){ animation-delay:.3s; }
+      @keyframes blink {
+        0%, 80%, 100% { opacity:.25; transform: translateY(0)} 
+        40% {opacity:.9; transform: translateY(-2px)} 
+      } 
       @keyframes fade-in {
         from { opacity: 0; transform: translateY(8px); }
         to { opacity: 1; transform: translateY(0); }
@@ -477,7 +638,7 @@
         id="llmDropdown"
         class="hidden absolute top-20 left-24 bg-zinc-900/95 border border-white/10 rounded-2xl shadow-2xl p-5 w-96 text-base backdrop-blur-md z-50"
       >
-        <h4 class="font-semibold text-zinc-100 text-lg mb-4 tracking-tight">
+        <h4 class="text-zinc-100 text-lg mb-4 tracking-tight">
           Select LLMs
         </h4>
 
@@ -491,7 +652,7 @@
                 <div class="grid place-items-center w-6 h-6 rounded-full bg-zinc-900 ring-1 ring-indigo-500/40 u-glow">
                   <img src="/assets/logos/unisyn-ai.svg" alt="Unisyn AI" class="w-5 h-5 opacity-90" />
                 </div>
-                <span class="font-semibold text-white">Let Unisyn choose for me</span>
+                <span class="text-white">Let Unisyn choose for me</span>
               </div>
               <input type="checkbox" class="w-4 h-4 accent-indigo-500" value="unisyn-auto" />
             </label>
@@ -501,7 +662,7 @@
           <div>
             <div class="flex items-center gap-3 mb-2">
               <img src="/assets/logos/openai_dark.svg" alt="OpenAI" class="w-6 h-6 opacity-90" />
-              <span class="font-semibold text-white">OpenAI</span>
+              <span class="text-white">OpenAI</span>
             </div>
             <div class="flex flex-col gap-2 pl-9">
               <label class="flex items-center justify-between hover:text-white transition">
@@ -535,7 +696,7 @@
           <div>
             <div class="flex items-center gap-3 mb-2">
               <img src="/assets/logos/claude-ai-icon.svg" alt="Claude AI" class="w-6 h-6 opacity-90" />
-              <span class="font-semibold text-white">Anthropic</span>
+              <span class="text-white">Anthropic</span>
             </div>
             <div class="flex flex-col gap-2 pl-9">
 
@@ -556,7 +717,7 @@
           <div>
             <div class="flex items-center gap-3 mb-2">
               <img src="/assets/logos/gemini.svg" alt="Gemini" class="w-6 h-6 opacity-90" />
-              <span class="font-semibold text-white">Google</span>
+              <span class="text-white">Google</span>
             </div>
             <div class="flex flex-col gap-2 pl-9">
 
@@ -582,7 +743,7 @@
           <div>
             <div class="flex items-center gap-3 mb-2">
               <img src="/assets/logos/meta-color.svg" alt="Meta" class="w-6 h-6 opacity-90" />
-              <span class="font-semibold text-white">Meta (Llama)</span>
+              <span class="text-white">Meta (Llama)</span>
             </div>
             <div class="flex flex-col gap-2 pl-9">
 
@@ -603,7 +764,7 @@
           <div>
             <div class="flex items-center gap-3 mb-2">
               <img src="/assets/logos/deepseek.svg" alt="DeepSeek" class="w-6 h-6 opacity-90" />
-              <span class="font-semibold text-white">DeepSeek</span>
+              <span class="text-white">DeepSeek</span>
             </div>
             <div class="flex flex-col gap-2 pl-9">
 
@@ -629,7 +790,7 @@
           <div>
             <div class="flex items-center gap-3 mb-2">
               <img src="/assets/logos/grok-dark.svg" alt="Grok" class="w-6 h-6 opacity-90" />
-              <span class="font-semibold text-white">xAI (Grok)</span>
+              <span class="text-white">xAI (Grok)</span>
             </div>
             <div class="flex flex-col gap-2 pl-9">
 
@@ -660,7 +821,7 @@
           <div>
             <div class="flex items-center gap-3 mb-2">
               <img src="/assets/logos/perplexity.svg" alt="Perplexity" class="w-6 h-6 opacity-90" />
-              <span class="font-semibold text-white">Perplexity</span>
+              <span class="text-white">Perplexity</span>
             </div>
             <div class="flex flex-col gap-2 pl-9">
 
@@ -686,7 +847,7 @@
           <div>
             <div class="flex items-center gap-3 mb-2">
               <img src="/assets/logos/copilot-color.svg" alt="Microsoft" class="w-6 h-6 opacity-90" />
-              <span class="font-semibold text-white">Microsoft</span>
+              <span class="text-white">Microsoft</span>
             </div>
             <div class="flex flex-col gap-2 pl-9">
 
@@ -712,7 +873,7 @@
           <div>
             <div class="flex items-center gap-3 mb-2">
               <img src="/assets/logos/qwen_dark.svg" alt="Qwen" class="w-6 h-6 opacity-90" />
-              <span class="font-semibold text-white">Qwen</span>
+              <span class="text-white">Qwen</span>
             </div>
             <div class="flex flex-col gap-2 pl-9">
 
@@ -803,23 +964,26 @@
 
           <!-- Textbox -->
           <div id="textboxContainer" class="flex-shrink-0 w-full px-4 pb-4">
-            <div class="w-full max-w-4xl mx-auto">
+          <div class="w-full max-w-4xl mx-auto">
+            
+            <div id="textInputWrapper" class="glass rounded-xl px-4 sm:px-5 py-3 ring-soft flex flex-col gap-3 relative overflow-y-auto">
               
-              <div class="glass rounded-xl px-4 sm:px-5 py-3 ring-soft flex flex-col gap-3 relative"> <button
-                  class="absolute top-2 right-2 p-1 text-zinc-500 hover:text-zinc-300 transition"
-                  title="Expand"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9M20.25 20.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
-                  </svg>
-                </button>
+              <button
+                id="expandBtn"
+                class="absolute top-2 right-8 p-1 text-zinc-500 hover:text-zinc-300 transition"
+                title="Expand"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9M20.25 20.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
+                </svg>
+              </button>
 
-                <textarea
-                  id="queryInput"
-                  rows="1"
-                  placeholder="What do you want to know?"
-                  class="auto-expanding-textarea flex-1 bg-transparent outline-none placeholder-gray text-base sm:text-lg resize-none max-h-[400px] leading-relaxed pr-8 overflow-y-auto"
-                ></textarea> <div class="flex items-center justify-between gap-2">
+              <textarea
+                id="queryInput"
+                rows="1"
+                placeholder="What do you want to know?"
+                class="auto-expanding-textarea flex-1 bg-transparent outline-none placeholder-gray text-base sm:text-lg resize-none leading-relaxed pr-8"
+              ></textarea> <div class="flex items-center justify-between gap-2">
                   
                   <div class="flex items-center gap-1">
                     <button
@@ -833,7 +997,7 @@
                     
                     <button
                       id="chooseLLMBtn"
-                      class="px-3 py-1.5 rounded-pill text-xs text-zinc-500 border border-zinc-700/50 hover:bg-zinc-800/50 hover:text-zinc-400 transition"
+                      class="px-3 py-1.5 rounded-xl text-xs text-zinc-500 border border-zinc-700/50 hover:bg-zinc-800/50 hover:text-zinc-400 transition"
                     >
                       👥 Who do you want to talk to?
                     </button>
