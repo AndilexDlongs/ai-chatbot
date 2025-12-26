@@ -4,8 +4,8 @@
   "description": "- Jaime Da Cruz\r - Okwukwechukwu Mbajiorgu\r - Andile Dlongwana",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch index.js",
-    "start": "node index.js"
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
   },
   "repository": {
     "type": "git",
