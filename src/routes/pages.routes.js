@@ -13,8 +13,12 @@ router.get('/', (req, res) => {
   res.sendFile(path.join(pagesDir, 'landing.html'));
 });
 
+// router.get('/chat', (req, res) => {
+//   res.sendFile(path.join(pagesDir, 'chat.html'));
+// });
+
 router.get('/chat', (req, res) => {
-  res.sendFile(path.join(pagesDir, 'chat.html'));
+  res.render('chat/index');
 });
 
 router.get('/pricing', (req, res) => {

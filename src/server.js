@@ -14,6 +14,10 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 
+// EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 const PORT = process.env.PORT || 8787;
 
 // Serve all frontend files

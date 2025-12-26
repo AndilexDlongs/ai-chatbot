@@ -1,0 +1,123 @@
+    <section class="flex-1 flex flex-col items-center justify-center text-center px-4 pt-24">
+        <div id="chatShell" class="w-full max-w-4xl">
+          <!-- Center Logo + Title -->
+          <div class="flex flex-col items-center mb-8">
+            <div class="grid place-items-center w-16 h-16 rounded-full bg-zinc-900 ring-soft mb-4 u-glow">
+              <!-- logo svg unchanged -->
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-label="Unisyn AI">
+                <defs>
+                  <linearGradient id="uGradHero" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#c4b5fd" />
+                    <stop offset="1" stop-color="#7c3aed" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M16 18v16c0 10 8 18 18 18s18-8 18-18V18"
+                  stroke="url(#uGradHero)"
+                  stroke-width="4"
+                  stroke-linecap="round"
+                />
+                <g class="u-orbit fast">
+                  <ellipse
+                    cx="34"
+                    cy="38"
+                    rx="22"
+                    ry="7"
+                    fill="none"
+                    stroke="#5a31d3"
+                    stroke-opacity=".55"
+                    stroke-width="2.6"
+                    transform="rotate(-18 34 38)"
+                  />
+                  <circle cx="54" cy="33" r="3.2" fill="#c4b5fd" />
+                </g>
+                <g class="u-orbit slow">
+                  <ellipse
+                    cx="34"
+                    cy="38"
+                    rx="16"
+                    ry="5"
+                    fill="none"
+                    stroke="#9d7cf7"
+                    stroke-opacity=".35"
+                    stroke-width="2"
+                    transform="rotate(14 34 38)"
+                  />
+                </g>
+                <circle cx="38" cy="20" r="3.2" fill="#c4b5fd" />
+              </svg>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight">Unisyn AI</h1>
+            <p class="mt-2 text-sm text-zinc-400">Many minds, one answer.</p>
+          </div>
+
+          <!-- Chat container -->
+          <div
+            id="chatContainer"
+            class="flex flex-col gap-4 p-4 w-full text-left items-stretch"
+          ></div>
+
+
+          <!-- Textbox -->
+          <div id="textboxContainer" class="flex-shrink-0 w-full px-4 pb-4">
+          <div class="w-full max-w-4xl mx-auto">
+            
+            <div id="textInputWrapper" class="glass rounded-xl px-4 sm:px-5 py-3 ring-soft flex flex-col gap-3 relative overflow-y-auto">
+              
+              <button
+                id="expandBtn"
+                class="absolute top-2 right-8 p-1 text-zinc-500 hover:text-zinc-300 transition"
+                title="Expand"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9M20.25 20.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
+                </svg>
+              </button>
+
+              <textarea
+                id="queryInput"
+                rows="1"
+                placeholder="What do you want to know?"
+                class="auto-expanding-textarea flex-1 bg-transparent outline-none placeholder-gray text-base sm:text-lg resize-none leading-relaxed pr-8"
+              ></textarea> <div class="flex items-center justify-between gap-2">
+                  
+                  <div class="flex items-center gap-1">
+                    <button
+                      class="grid place-items-center w-8 h-8 rounded-full text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60 transition"
+                      title="Add file"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                      </svg>
+                    </button>
+                    
+                    <button
+                      id="chooseLLMBtn"
+                      class="px-3 py-1.5 rounded-xl text-xs text-zinc-500 border border-zinc-700/50 hover:bg-zinc-800/50 hover:text-zinc-400 transition"
+                    >
+                      👥 Who do you want to talk to?
+                    </button>
+                  </div>
+
+                  <button
+                    id="sendBtn"
+                    class="grid place-items-center w-10 h-10 rounded-full bg-zinc-100 text-zinc-900 hover:bg-white flex-shrink-0"
+                    title="Send"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                      <path 
+                        d="M12 19V5M5 12l7-7 7 7" 
+                        stroke="currentColor" 
+                        stroke-width="2" 
+                        stroke-linecap="round" 
+                        stroke-linejoin="round" 
+                      />
+                    </svg>
+                  </button>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>

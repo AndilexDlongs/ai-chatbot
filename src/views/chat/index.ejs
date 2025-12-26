@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unisyn AI</title>
+
+    <!-- Tailwind CDN (keep for now) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: { bg: { DEFAULT: '#0d0f12', soft: '#13161b' }, ring: '#1f2430' },
+            boxShadow: { subtle: '0 1px 2px rgba(0,0,0,.25), 0 8px 32px rgba(0,0,0,.35)' },
+            borderRadius: { pill: '9999px' },
+          },
+        },
+      };
+    </script>
+
+    <!-- libs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+
+    <link rel="stylesheet" href="/css/chat.css" />
+  </head>
+
+  <body class="h-full text-zinc-200 u-accent flex">
+    <canvas id="stars" class="fixed inset-0 -z-10"></canvas>
+
+    <%- include('./_sidebar') %>
+
+    <div class="flex-1 flex flex-col h-full overflow-hidden">
+      <%- include('./_topnav') %>
+
+      <main class="flex-1 overflow-y-auto bg-[#0d0f12] text-zinc-200 relative">
+        <%- include('./_llmDropdown') %>
+        <%- include('./_main') %>
+      </main>
+    </div>
+
+    <%- include('./_settingsModal') %>
+
+    <!-- ✅ new modular JS entry -->
+    <script type="module" src="/js/chat/index.js"></script>
+  </body>
+</html>
