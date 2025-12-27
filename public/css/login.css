@@ -1,0 +1,55 @@
+body {
+  background: radial-gradient(140% 140% at 50% -10%, rgba(139, 92, 246, 0.22) 0%, rgba(139, 92, 246, 0) 55%), #0d0f12;
+}
+.u-glow {
+  filter: drop-shadow(0 8px 32px rgba(124, 58, 237, 0.35));
+}
+.u-orbit {
+  transform-origin: 50% 50%;
+  animation: u-spin 9s linear infinite;
+}
+.u-orbit.fast {
+  animation-duration: 6.5s;
+}
+@keyframes u-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.tab-btn {
+  padding: 0.6rem 0.9rem;
+  border-radius: 0.9rem;
+  background: transparent;
+  color: #cbd5e1;
+  border: 1px solid transparent;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+.tab-btn.active {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #fff;
+}
+.oauth-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.15s ease;
+}
+.oauth-btn:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.rule-line.pass {
+  color: #4ade80;
+}
+.rule-line.fail {
+  color: #f87171;
+}

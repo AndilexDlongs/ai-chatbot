@@ -3,9 +3,11 @@ import express from 'express';
 import cors from 'cors';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import cookieParser from 'cookie-parser';
 
 import pagesRouter from './routes/pages.routes.js';
 import apiRouter from './routes/api.routes.js';
+import authRouter from './routes/auth.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,6 +15,8 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // EJS
 app.set('view engine', 'ejs');
@@ -23,6 +27,9 @@ const PORT = process.env.PORT || 8787;
 // Serve all frontend files
 const publicDir = path.join(__dirname, '..', 'public');
 app.use(express.static(publicDir));
+
+// Auth pages & actions
+app.use('/', authRouter);
 
 // Page routes (/chat, /pricing etc.)
 app.use('/', pagesRouter);

@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { requireAuth } from '../controllers/auth.controller.js';
 
 const router = express.Router();
 
@@ -13,13 +14,13 @@ router.get('/', (req, res) => {
   res.sendFile(path.join(pagesDir, 'landing.html'));
 });
 
-// router.get('/chat', (req, res) => {
-//   res.sendFile(path.join(pagesDir, 'chat.html'));
-// });
-
-router.get('/chat', (req, res) => {
+router.get('/chat', requireAuth, (req, res) => {
   res.render('chat/index');
 });
+
+// Normalize signup/subscribe to login
+router.get('/signup', (req, res) => res.redirect('/login?tier=free'));
+router.get('/subscribe', (req, res) => res.redirect('/login?tier=pro'));
 
 router.get('/pricing', (req, res) => {
   res.sendFile(path.join(pagesDir, 'pricing.html'));
