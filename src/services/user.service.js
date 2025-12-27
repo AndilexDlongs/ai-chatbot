@@ -10,6 +10,13 @@ export function findUserByEmail(email) {
   return db.prepare('SELECT * FROM users WHERE email = ?').get(email.trim().toLowerCase());
 }
 
+export function findUserByProvider(provider, providerSub) {
+  const db = getDb();
+  return db
+    .prepare('SELECT * FROM users WHERE provider = ? AND provider_sub = ?')
+    .get(provider, providerSub);
+}
+
 export function createUser({ email, password }) {
   const db = getDb();
   const normalizedEmail = email.trim().toLowerCase();
@@ -21,6 +28,16 @@ export function createUser({ email, password }) {
 
   const info = stmt.run(normalizedEmail, passwordHash, 'local');
   return { id: info.lastInsertRowid, email: normalizedEmail };
+}
+
+export function createOAuthUser({ provider, providerSub, email }) {
+  const db = getDb();
+  const normalizedEmail = email.trim().toLowerCase();
+  const stmt = db.prepare(
+    'INSERT INTO users (email, provider, provider_sub, password_hash) VALUES (?, ?, ?, ?)'
+  );
+  const info = stmt.run(normalizedEmail, provider, providerSub, '');
+  return { id: info.lastInsertRowid, email: normalizedEmail, provider, provider_sub: providerSub };
 }
 
 export function verifyPassword(user, password) {

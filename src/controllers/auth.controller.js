@@ -5,6 +5,8 @@ import {
   verifyPassword,
   isValidEmail,
   passwordRuleCheck,
+  createOAuthUser,
+  findUserByProvider,
 } from '../services/user.service.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change';
@@ -68,6 +70,17 @@ export function login(req, res) {
 
   setSessionCookie(res, { userId: user.id, email: user.email });
   res.json({ ok: true, redirect: '/chat' });
+}
+
+// Google OAuth handlers use Passport; user is set on req.user by passport.authenticate
+export function handleOAuthSuccess(req, res) {
+  if (!req.user) return res.redirect('/login?oauth=failed');
+  setSessionCookie(res, { userId: req.user.id, email: req.user.email });
+  return res.redirect('/chat');
+}
+
+export function handleOAuthFailure(req, res) {
+  return res.redirect('/login?oauth=failed');
 }
 
 export function requireAuth(req, res, next) {

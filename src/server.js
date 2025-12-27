@@ -4,6 +4,7 @@ import cors from 'cors';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import cookieParser from 'cookie-parser';
+import passport from './auth/passport.js';
 
 import pagesRouter from './routes/pages.routes.js';
 import apiRouter from './routes/api.routes.js';
@@ -17,6 +18,7 @@ app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(passport.initialize());
 
 // EJS
 app.set('view engine', 'ejs');

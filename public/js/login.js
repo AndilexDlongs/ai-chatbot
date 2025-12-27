@@ -194,3 +194,10 @@ form?.addEventListener('submit', async e => {
 
 // Initialize default tab if page was opened in signup mode
 if (form?.dataset.mode === 'signup') setMode('signup');
+
+// Show error for failed OAuth if present in query string
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('oauth') === 'failed') {
+  errorBox.textContent = 'Google sign-in was unsuccessful. Please try again.';
+  errorBox.classList.remove('hidden');
+}
